@@ -11,7 +11,7 @@ pip install cloud-sheets-slim
 ```bash
 from cloud_sheets_slim import CloudSheetsSlim
 
-cloud_sheet = CloudSheetSlim("https://docs.google.com/spreadsheets/d/1LS1gMp_wFkmuFTS17D***your-doc-key***", "Sheet1")
+cloud_sheet = CloudSheetsSlim("https://docs.google.com/spreadsheets/d/1LS1gMp_wFkmuFTS17D***your-doc-key***", "Sheet1")
 cloud_sheet.find()
 ```
 

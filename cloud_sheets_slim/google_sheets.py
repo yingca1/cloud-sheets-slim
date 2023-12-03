@@ -104,7 +104,7 @@ class GoogleSheets(CloudSheetsBase):
                 col = df.columns.get_loc(key) + 1
                 self.worksheet.update_cell(int(idx[0]) + 2, col, value)
 
-    def update_one(self, query, new_values):
+    def update_one(self, query, new_items, upsert=False):
         df = self._get_all_records()
 
         for key, value in query.items():
@@ -113,21 +113,35 @@ class GoogleSheets(CloudSheetsBase):
         idx = df.index
 
         if not idx.empty:
-            for key, value in new_values.items():
+            for key, value in new_items.items():
                 self.worksheet.update_cell(
                     idx[0] + 2, df.columns.get_loc(key) + 1, value
                 )
+        elif upsert:
+            new_row = {**query, **new_items}
+            self.insert_one(new_row)
 
-    def update_many(self, query, update):
+    def update_many(self, query, update, upsert=False):
         df = self._get_all_records()
 
-        mask = (df[list(query.keys())] == pd.Series(query)).all(axis=1)
-        idx_list = df[mask].index.tolist()
+        if df.empty and upsert:
+            self.insert_one({**query, **update})
+            return
 
-        for idx in idx_list:
-            row = df.loc[idx].to_dict()
-            row.update(update)
-            self.replace_one({k: row[k] for k in query}, row)
+        if not set(query.keys()).issubset(df.columns):
+            raise KeyError("Some query keys are not in the DataFrame")
+
+        mask = (df[list(query.keys())] == pd.Series(query)).all(axis=1)
+        matching_rows = df[mask]
+
+        if not matching_rows.empty:
+            df.update(matching_rows.assign(**update))
+
+        if upsert and matching_rows.empty:
+            new_row = {**query, **update}
+            df = df.append(new_row, ignore_index=True)
+
+        self._update_all_records(df)
 
     def delete_one(self, query):
         df = self._get_all_records()

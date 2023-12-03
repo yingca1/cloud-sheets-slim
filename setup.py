@@ -11,7 +11,7 @@ def read_requirements():
 
 setup(
     name="cloud_sheets_slim",
-    version="0.1.0",
+    version="0.1.1",
     author="Ying Cai",
     author_email="i@caiying.me",
     description="A lightweight cloud sheets operation library",

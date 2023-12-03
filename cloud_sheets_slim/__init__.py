@@ -5,7 +5,7 @@ from .google_sheets import GoogleSheets
 
 logger = logging.getLogger(__name__)
 
-class CloudSheetSlim:
+class CloudSheetsSlim:
     def __init__(self, spreadsheet_url, sheet_name="Sheet1") -> None:
         self.cloud_sheet = GoogleSheets(spreadsheet_url, sheet_name)
 
