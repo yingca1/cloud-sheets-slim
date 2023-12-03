@@ -21,11 +21,11 @@ class CloudSheetsSlim:
     def find(self, query):
         return self.cloud_sheet.find(query)
 
-    def update_one(self, query, update):
-        return self.cloud_sheet.update_one(query, update)
+    def update_one(self, query, update, upsert=False):
+        return self.cloud_sheet.update_one(query, update, upsert)
 
-    def update_many(self, query, update):
-        return self.cloud_sheet.update_many(query, update)
+    def update_many(self, query, update, upsert=False):
+        return self.cloud_sheet.update_many(query, update, upsert)
 
     def replace_one(self, query, replacement):
         return self.cloud_sheet.replace_one(query, replacement)
