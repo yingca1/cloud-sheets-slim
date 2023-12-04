@@ -8,6 +8,8 @@ def read_requirements():
 
     return requirements
 
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
 
 setup(
     name="cloud_sheets_slim",
@@ -18,4 +20,6 @@ setup(
     url="https://github.com/yingca1/cloud-sheets-slim",
     packages=find_packages(),
     install_requires=read_requirements(),
+    long_description=long_description,
+    long_description_content_type="text/markdown",
 )
