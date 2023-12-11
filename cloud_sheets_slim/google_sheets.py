@@ -28,9 +28,8 @@ class GoogleSheets(CloudSheetsBase):
 
     def _update_all_records(self, df):
         self.worksheet.clear()
-        self.worksheet.append_row(df.columns.tolist())
-        for index, row in df.iterrows():
-            self.worksheet.append_row(row.tolist())
+        data = [df.columns.tolist()] + df.values.tolist()
+        self.worksheet.append_rows(data)
 
     def _get_header(self):
         return self.worksheet.row_values(1)
@@ -114,6 +113,10 @@ class GoogleSheets(CloudSheetsBase):
 
         if not idx.empty:
             for key, value in new_items.items():
+                if key not in df.columns:
+                    self.worksheet.add_cols(1)
+                    self.worksheet.update_cell(1, len(df.columns) + 1, key)
+                    df.columns = self._get_header()
                 self.worksheet.update_cell(
                     idx[0] + 2, df.columns.get_loc(key) + 1, value
                 )

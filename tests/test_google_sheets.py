@@ -193,6 +193,29 @@ class TestGoogleSheets(unittest.TestCase):
         self.assertEqual(result["key1"], "new_value1")
         self.assertEqual(result["key2"], "new_value2")
 
+    def test_update_one_with_upsert(self):
+        # random value for key1
+        random_id = str(uuid.uuid4())
+        random_key = str(uuid.uuid4())
+
+        update_record = {"key1": "new_value1_upsert", "key2": "new_value2_upsert"}
+        update_record[random_key] = random_key
+
+        # Update the inserted record
+        self.sheet.update_one(
+            {"_id": random_id},
+            update_record,
+            upsert=True,
+        )
+
+        # Find the updated record
+        result = self.sheet.find_one({"_id": random_id})
+
+        # Check if the update was successful
+        self.assertEqual(result["key1"], "new_value1_upsert")
+        self.assertEqual(result["key2"], "new_value2_upsert")
+        self.assertEqual(result[random_key], random_key)
+
     def test_update_many(self):
         # Insert multiple records to update
         unique_value = str(uuid.uuid4())
