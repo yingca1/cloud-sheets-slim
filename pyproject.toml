@@ -1,12 +1,14 @@
 [tool.poetry]
 name = "cloud_sheets_slim"
-version = "0.1.3"
+version = "0.1.4a0"
+homepage = "https://github.com/yingca1/cloud-sheets-slim"
 description = "A lightweight cloud sheets operation library"
 authors = ["Ying Cai <i@caiying.me>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.8"
+gspread = "^5.12.0"
 pandas = "^2.1.4"
 oauth2client = "^4.1.3"
 python-dotenv = "^1.0.0"
