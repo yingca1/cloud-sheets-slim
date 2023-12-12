@@ -36,8 +36,5 @@ class CloudSheetsSlim:
     def delete_many(self, query):
         return self.cloud_sheet.delete_many(query)
 
-    def delete_all(self):
-        return self.cloud_sheet.delete_all()
-
-    def get_all_records(self):
-        return self.cloud_sheet.get_all_records()
+    def count_records(self):
+        return self.cloud_sheet.count_records()
