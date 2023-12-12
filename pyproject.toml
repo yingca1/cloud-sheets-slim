@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cloud_sheets_slim"
-version = "0.1.4a2"
+version = "0.1.4a3"
 homepage = "https://github.com/yingca1/cloud-sheets-slim"
 description = "A lightweight cloud sheets operation library"
 authors = ["Ying Cai <i@caiying.me>"]
