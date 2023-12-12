@@ -27,9 +27,8 @@ class GoogleSheets(CloudSheetsBase):
         return pd.DataFrame(self.worksheet.get_all_records())
 
     def _update_all_records(self, df):
-        self.worksheet.clear()
-        data = [df.columns.tolist()] + df.values.tolist()
-        self.worksheet.append_rows(data)
+        rows = df.values.tolist()
+        self.worksheet.update('A2', rows)
 
     def _get_header(self):
         return self.worksheet.row_values(1)
@@ -106,20 +105,20 @@ class GoogleSheets(CloudSheetsBase):
     def update_one(self, query, new_items, upsert=False):
         df = self._get_all_records()
 
-        for key, value in query.items():
-            df = df[df[key] == value]
+        # Apply query to filter the DataFrame
+        query_mask = df.apply(lambda row: all(row[k] == v for k, v in query.items()), axis=1)
 
-        idx = df.index
+        if query_mask.any():
+            row_idx = df.index[query_mask][0]
 
-        if not idx.empty:
             for key, value in new_items.items():
                 if key not in df.columns:
-                    self.worksheet.add_cols(1)
-                    self.worksheet.update_cell(1, len(df.columns) + 1, key)
-                    df.columns = self._get_header()
-                self.worksheet.update_cell(
-                    idx[0] + 2, df.columns.get_loc(key) + 1, value
-                )
+                    df[key] = None
+                df.at[row_idx, key] = value
+
+            updated_row = [df.iloc[row_idx].tolist()]
+            self.worksheet.update(f'A{row_idx + 2}', updated_row)
+
         elif upsert:
             new_row = {**query, **new_items}
             self.insert_one(new_row)
