@@ -105,7 +105,8 @@ class GoogleSheets(CloudSheetsBase):
     def update_one(self, query, new_items, upsert=False):
         df = self._get_all_records()
 
-        # Apply query to filter the DataFrame
+        new_column_added = False
+
         query_mask = df.apply(lambda row: all(row[k] == v for k, v in query.items()), axis=1)
 
         if query_mask.any():
@@ -114,7 +115,12 @@ class GoogleSheets(CloudSheetsBase):
             for key, value in new_items.items():
                 if key not in df.columns:
                     df[key] = None
+                    new_column_added = True
                 df.at[row_idx, key] = value
+
+            if new_column_added:
+                header_row = df.columns.tolist()
+                self.worksheet.update('A1', [header_row])
 
             updated_row = [df.iloc[row_idx].tolist()]
             self.worksheet.update(f'A{row_idx + 2}', updated_row)
