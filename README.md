@@ -12,10 +12,27 @@ pip install cloud-sheets-slim
 from cloud_sheets_slim import CloudSheetsSlim
 
 cloud_sheet = CloudSheetsSlim("https://docs.google.com/spreadsheets/d/1LS1gMp_wFkmuFTS17D***your-doc-key***", "Sheet1")
-cloud_sheet.find()
+pdp = sheets.to_pdp()
+
+# query operations
+pdp.find({'key': 'value'})
+pdp.find_one({'key': 'value'})
+
+# write operations
+pdp.update_one({'key': 'value'}, update_object)
+pdp.replace_one({'key': 'value'}, update_object)
+pdp.delete_one({'key': 'value'})
+# send updated result to cloud sheets
+cloud_sheet.push_df(pdp.get_df())
 ```
 
 ## Features
+
+load data from cloud sheets to pandas proxy, manipulate data in pandas proxy, every operation will be recorded in pandas proxy, and push back to cloud sheets.
+
+avoid too many API calls to cloud sheets.
+
+### Pandas proxy
 
 - [x] find_one
 - [x] find
