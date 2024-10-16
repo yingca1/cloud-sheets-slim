@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cloud_sheets_slim"
-version = "0.2.1a1"
+version = "0.2.1a2"
 homepage = "https://github.com/yingca1/cloud-sheets-slim"
 description = "A lightweight cloud sheets operation library"
 authors = ["Ying Cai <i@caiying.me>"]
@@ -9,7 +9,6 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 gspread = "^5.12.0"
-gspread-pandas= "v3.3.0"
 pandas = "^2.1.4"
 oauth2client = "^4.1.3"
 python-dotenv = "^1.0.0"
