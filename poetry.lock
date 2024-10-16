@@ -137,17 +137,6 @@ files = [
 ]
 
 [[package]]
-name = "decorator"
-version = "5.1.1"
-description = "Decorators for Humans"
-optional = false
-python-versions = ">=3.5"
-files = [
-    {file = "decorator-5.1.1-py3-none-any.whl", hash = "sha256:b8c3f85900b9dc423225913c5aace94729fe1fa9763b38939a95226f02d37186"},
-    {file = "decorator-5.1.1.tar.gz", hash = "sha256:637996211036b6385ef91435e4fae22989472f9d571faba8927ba8253acbc330"},
-]
-
-[[package]]
 name = "google-auth"
 version = "2.35.0"
 description = "Google Authentication Library"
@@ -202,27 +191,6 @@ files = [
 [package.dependencies]
 google-auth = ">=1.12.0"
 google-auth-oauthlib = ">=0.4.1"
-
-[[package]]
-name = "gspread-pandas"
-version = "3.2.2"
-description = "A package to easily open an instance of a Google spreadsheet and interact with worksheets through Pandas DataFrames."
-optional = false
-python-versions = "*"
-files = [
-    {file = "gspread-pandas-3.2.2.tar.gz", hash = "sha256:72371ff295411f24acbed85026abbd0641c098f5c62c8454147feed71ec4850e"},
-    {file = "gspread_pandas-3.2.2-py2.py3-none-any.whl", hash = "sha256:928a8023d6dc8bb8331348eab673ef832ec910e07721f7efda85c7d1eca99af4"},
-]
-
-[package.dependencies]
-decorator = "*"
-google-auth = "*"
-google-auth-oauthlib = "*"
-gspread = ">=5.0.0"
-pandas = ">=0.20.0"
-
-[package.extras]
-dev = ["betamax", "betamax-serializers", "black", "bump2version", "coverage", "flake8", "isort", "oauth2client", "pip", "pre-commit", "pycryptodome", "pytest", "pytest-mock", "sphinx", "sphinx-rtd-theme", "tox", "twine", "wheel"]
 
 [[package]]
 name = "httplib2"
@@ -607,4 +575,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "490738acb1b87eafc3211512c637c9fac9c9a7a2d5bbec3342f4e0e535c5b5c6"
+content-hash = "3d29abe499c207c4c66584da6ed34abb3196e9b6df68928cfda56581edd77dbb"

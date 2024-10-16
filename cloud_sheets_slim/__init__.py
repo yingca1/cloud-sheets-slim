@@ -17,7 +17,7 @@ class CloudSheetsSlim:
         if not spreadsheet_url:
             raise Exception("spreadsheet_url is required")
 
-        if spreadsheet_url.startswith("https://docs.google.com/spreadsheets/"):
+        if GoogleSheets.is_vaild_url(spreadsheet_url):
             self.cloud_sheet = GoogleSheets(spreadsheet_url, sheet_name)
         else:
             raise Exception("spreadsheet_url is not supported")

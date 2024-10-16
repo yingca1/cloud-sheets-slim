@@ -1,6 +1,10 @@
+"""
+https://docs.gspread.org/en/latest/index.html
+"""
 import os
-from gspread_pandas import Spread, Client
-from oauth2client.service_account import ServiceAccountCredentials
+import gspread
+import pandas as pd
+from google.oauth2.service_account import Credentials
 from .cloud_sheets_base import CloudSheetsBase
 import logging
 
@@ -9,17 +13,29 @@ logger = logging.getLogger(__name__)
 
 class GoogleSheets(CloudSheetsBase):
     def __init__(self, spreadsheet_url, sheet_name):
-        json_file = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
-        scope = [
+        gcp_json_key = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+        scopes = [
             "https://spreadsheets.google.com/feeds",
             "https://www.googleapis.com/auth/drive",
         ]
-        creds = ServiceAccountCredentials.from_json_keyfile_name(json_file, scope)
-        self.spread = Spread(spreadsheet_url, sheet_name, creds=creds)
+        credentials = Credentials.from_service_account_file(
+            gcp_json_key,
+            scopes=scopes
+        )
+        self.gc = gspread.authorize(credentials)
+        self.sh = self.gc.open_by_url(spreadsheet_url)
+        self.worksheet = self.sh.worksheet(sheet_name)
+
+    @staticmethod
+    def is_vaild_url(url):
+        return url.startswith("https://docs.google.com/spreadsheets/")
 
     def pull_sheet_to_df(self):
-        return self.spread.sheet_to_df(index=0, header_rows=1).fillna("")
+        df = pd.DataFrame(self.worksheet.get_all_records())
+        df = df.set_index(0).fillna("")
+        return df
 
     def push_df_to_sheet(self, df):
-        self.spread.df_to_sheet(df, index=False, sheet=self.spread.sheet)
+        self.worksheet.clear()
+        self.worksheet.update([df.columns.values.tolist()] + df.values.tolist())
         logger.info(f"Pushed {len(df)} records to Google Sheets")
