@@ -7,7 +7,7 @@ authors = ["Ying Cai <i@caiying.me>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.10"
 gspread = "^5.12.0"
 gspread-pandas= "v3.2.2"
 pandas = "^2.1.4"
