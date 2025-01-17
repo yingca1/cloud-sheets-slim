@@ -34,13 +34,30 @@ class PandasProxy:
 
     def find(self, query={}):
         df = self.source_df.copy()
-
+        
         for key, value in query.items():
-            df = df[self.source_df[key] == value]
+            if isinstance(value, dict):
+                # Handle MongoDB-style operators
+                for op, val in value.items():
+                    if op == "$gt":
+                        df = df[df[key] > val]
+                    elif op == "$gte":
+                        df = df[df[key] >= val]
+                    elif op == "$lt":
+                        df = df[df[key] < val]
+                    elif op == "$lte":
+                        df = df[df[key] <= val]
+                    elif op == "$ne":
+                        df = df[df[key] != val]
+                    elif op == "$in":
+                        df = df[df[key].isin(val)]
+            else:
+                # Handle simple equality
+                df = df[df[key] == value]
 
         result = df.to_dict("records") if not df.empty else []
         result = [{k: v for k, v in res.items() if v != ""} for res in result]
-
+        
         return result
 
     def insert_one(self, record):
@@ -105,10 +122,26 @@ class PandasProxy:
             self.source_df = self.source_df[self.source_df[key] != value]
 
     def delete_many(self, query):
-        mask = (self.source_df[list(query.keys())] == pd.Series(query)).all(axis=1)
-        idx_list = self.source_df[~mask].index.tolist()
-
-        self.source_df = self.source_df.loc[idx_list]
+        """
+        Delete multiple records that match the query criteria.
+        Supports basic MongoDB-style queries including $in operator.
+        """
+        if len(query) == 1 and isinstance(query[list(query.keys())[0]], dict):
+            # Handle MongoDB-style operators
+            field = list(query.keys())[0]
+            operator_dict = query[field]
+            
+            if "$in" in operator_dict:
+                # Handle $in operator
+                values = operator_dict["$in"]
+                mask = self.source_df[field].isin(values)
+                self.source_df = self.source_df[~mask]
+            else:
+                raise ValueError(f"Unsupported operator in query: {operator_dict}")
+        else:
+            # Handle simple equality queries
+            mask = (self.source_df[list(query.keys())] == pd.Series(query)).all(axis=1)
+            self.source_df = self.source_df[~mask]
 
     def count_records(self, query={}):
         if query:
